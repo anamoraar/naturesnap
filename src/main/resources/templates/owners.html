@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>NatureSnap</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap.min.js"></script>
+</head>
+<body>
+<br>
+<nav class="navbar navbar-dark bg-dark justify-content-between fixed-top">
+    <a class="navbar-brand mb-0 h1">NatureSnap</a>
+    <form class="form-inline mx-auto">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search for owners" aria-label="Search" id="searchBar3">
+    </form>
+    <a href="/taxons" class="btn btn-outline-light my-2 my-sm-0 mr-2">Show taxons</a>
+    <a href="/home" class="btn btn-outline-light my-2 my-sm-0 mr-2">Show images</a>
+</nav>
+<br><br>
+
+<table id="tablaown" class="table table-bordered text-center">
+    <thead class="thead-dark">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Country</th>
+        <th>Phone number</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <!-- Expresión de Thymeleaf para pasar por cada una de los taxones en el objeto "taxons" -->
+    <tr th:each = "owner, hh : ${owners}">
+        <td th:text="${owner.getId()}"></td>
+        <td th:text="${owner.displayInformation()}"></td>
+        <td th:text="${owner.getCountry()}"></td>
+        <td th:text="${owner.getPhone_number()}"></td>
+        <td th:text="${owner.getEmail()}"/></td>
+    </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#tablaown').DataTable( {
+            "oLanguage": {
+                "sLengthMenu": "Show _MENU_ images per page",
+                "sInfo": "Pages: "
+            },
+            "lengthMenu": [ [5, 10, 15], [5, 10, 15] ],
+            "pagingType": "numbers",
+            "dom": 'lrtip'
+        } );
+        $('#searchBar3').keyup(function(){
+            $('#tablaown').DataTable().search($(this).val()).draw();
+        })
+    } );
+</script>
+</body>
+</html>

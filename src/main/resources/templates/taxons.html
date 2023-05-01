@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>NatureSnap</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<br>
+<nav class="navbar navbar-dark bg-dark justify-content-between fixed-top">
+    <a class="navbar-brand mb-0 h1">NatureSnap</a>
+    <form class="form-inline mx-auto">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search for taxons" aria-label="Search" id="searchBar2">
+    </form>
+    <a href="/taxons/addtaxon" class="btn btn-outline-light my-2 my-sm-0 mr-2">Add taxon</a>
+    <a href="/home" class="btn btn-outline-light my-2 my-sm-0 mr-2">Go back</a>
+</nav>
+<br><br>
+
+<table id="tablatax" class="table table-bordered text-center">
+    <thead class="thead-dark">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Ancestor ID</th>
+        <th>Author</th>
+        <th>Creation Year</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <!-- Expresión de Thymeleaf para pasar por cada una de los taxones en el objeto "taxons" -->
+    <tr th:each = "taxon, hh : ${taxons}">
+        <td th:text="${taxon.getId()}"></td>
+        <td th:text="${taxon.getScientific_name()}"></td>
+        <td th:text="${taxon.getAncestorID()}"></td>
+        <td th:text="${taxon.getAuthor()}"></td>
+        <td th:text="${taxon.displayInformation()}"/></td>
+        <td>
+            <div class="btn-group" role="group">
+                <button class="btn btn-outline-danger my-2 my-sm-0 deleteTaxon" th:data-id="${taxon.getId()}">Delete</button>
+                <a th:href="@{/taxons/edit(id=${taxon.getId()})}" class="btn btn-outline-info my-2 my-sm-0 mr-2">Edit</a>
+            </div>
+       </td>
+   </tr>
+   </tbody>
+</table>
+<script type="text/javascript">
+   $(document).ready(function() {
+       $('#tablatax').DataTable( {
+           "oLanguage": {
+               "sLengthMenu": "Show _MENU_ images per page",
+               "sInfo": "Pages: "
+           },
+           "lengthMenu": [ [5, 10, 15], [5, 10, 15] ],
+           "pagingType": "numbers",
+           "dom": 'lrtip'
+       } );
+       $('#searchBar2').keyup(function(){
+           $('#tablatax').DataTable().search($(this).val()).draw();
+       })
+   } );
+</script>
+</body>
+</html>

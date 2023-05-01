@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>NatureSnap</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<br>
+<nav class="navbar navbar-dark bg-dark justify-content-between fixed-top">
+    <a class="navbar-brand mb-0 h1">NatureSnap</a>
+    <form class="form-inline mx-auto">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search for images" aria-label="Search" id="searchBar">
+    </form>
+    <a href="/image/addimage" class="btn btn-outline-light my-2 my-sm-0 mr-2">Add image</a>
+    <a href="/taxons" class="btn btn-outline-light my-2 my-sm-0 mr-2">Show taxons</a>
+    <a href="/owners" class="btn btn-outline-light my-2 my-sm-0 mr-2">Show owners</a>
+</nav>
+<br><br>
+
+<table id="tabla" class="table table-bordered text-center">
+    <thead class="thead-dark">
+    <tr>
+        <th>Image</th>
+        <th>License</th>
+        <th>Description</th>
+        <th>Related words</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <!-- Expresión de Thymeleaf para pasar por cada una de las imágenes en el objeto "images" -->
+    <tr th:each = "image, hh : ${images}">
+        <td><img th:src="@{${'/image/vista/'+ image.getId()}}"
+                 class="card img-fluid mx-auto" style="width:300px" alt=""/></td>
+        <td th:text="${image.getLicense()}"></td>
+        <td th:text="${image.getDescription()}"/></td>
+        <td th:text="${image.displayInformation()}"/></td>
+        <td>
+            <div class="btn-group" role="group">
+                <a th:href="@{/image/attributes(id=${image.getId()})}" class="btn btn-outline-dark my-2 my-sm-0">Get details</a>
+                <a th:href="@{/image/edit(id=${image.getId()})}" class="btn btn-outline-info my-2 my-sm-0">Edit</a>
+                <button class="btn btn-outline-danger my-2 my-sm-0 deleteImage" th:data-id="${image.getId()}">Delete</button>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#tabla').DataTable( {
+            "oLanguage": {
+                "sLengthMenu": "Show _MENU_ images per page",
+                "sInfo": "Pages: "
+            },
+            "lengthMenu": [ [5, 10, 15], [5, 10, 15] ],
+            "pagingType": "numbers",
+            "dom": 'lrtip'
+        } );
+        $('#searchBar').keyup(function(){
+            $('#tabla').DataTable().search($(this).val()).draw();
+        })
+    } );
+</script>
+</body>
+</html>
